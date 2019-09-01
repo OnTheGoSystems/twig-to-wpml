@@ -1,0 +1,25 @@
+{
+  "name": "otgs/twig-to-wpml",
+  "description": "WP-CLI extension to parse Twig tempates for strings and register them with WPML String Translation.",
+  "type": "project",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "jan",
+      "email": "jan.s@onthegosystems.com"
+    }
+  ],
+  "config": {
+    "vendor-dir": "vendor/",
+    "platform": {
+      "php": "7.1"
+    }
+  },
+  "require": {
+    "twig/twig": "^2.11"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master"
+  }
+}
