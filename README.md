@@ -1,6 +1,6 @@
 # twig-to-wpml
 
-This tools scans a provided directory for Twig templates and extracts strings 
+This tools scans a provided directory for [Twig](https://twig.symfony.com/) templates and extracts strings 
 from gettext function calls. Then it produces a PHP file with those translatable strings
 in a way that it can be parsed by [WPML String Translation](https://wpml.org/documentation/getting-started-guide/string-translation/) 
 or tools like POEdit.
@@ -48,6 +48,7 @@ Run the command with a `--help` argument to receive the full usage information.
 - Better error handling and logging.
 - Unit tests.
 - WP CLI command.
+- Extract "translators:" comments.
 
 _Contributions are very welcome._
 
