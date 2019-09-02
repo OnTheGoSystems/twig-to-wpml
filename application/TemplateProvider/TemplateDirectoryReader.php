@@ -43,6 +43,35 @@ class TemplateDirectoryReader implements TemplateProviderInterface {
 
 
 	/**
+	 * @inheritDoc
+	 */
+	public function getNextTemplate() {
+		$this->maybeScan();
+
+		if ( empty( $this->templateFiles ) ) {
+			return null;
+		}
+
+		return $this->templateFactory->createFromFile( array_shift( $this->templateFiles ) );
+	}
+
+
+	/**
+	 * Perform scan for twig templates if it hasn't been performed already.
+	 */
+	private function maybeScan() {
+		if ( $this->isScanned ) {
+			return;
+		}
+
+		$this->templateFiles = $this->globRecursive( $this->trailingslashit( $this->rootDir ) . '*.twig' );
+
+		$this->logger->log( sprintf( 'Discovered %d Twig templates in "%s".', count( $this->templateFiles ), $this->rootDir ) );
+		$this->isScanned = true;
+	}
+
+
+	/**
 	 * Recursively apply a glob pattern on a directory.
 	 *
 	 * @link https://stackoverflow.com/a/12109100
@@ -56,7 +85,7 @@ class TemplateDirectoryReader implements TemplateProviderInterface {
 		$files = glob( $pattern, $flags );
 		$subdirs = glob( dirname( $pattern ) . '/*', GLOB_ONLYDIR | GLOB_NOSORT );
 
-		if( false === $files || false === $subdirs ) {
+		if ( false === $files || false === $subdirs ) {
 			throw new \RuntimeException( 'glob error' );
 		}
 		foreach ( $subdirs as $dir ) {
@@ -69,21 +98,6 @@ class TemplateDirectoryReader implements TemplateProviderInterface {
 
 
 	/**
-	 * Perform scan for twig templates if it hasn't been performed already.
-	 */
-	private function maybeScan() {
-		if( $this->isScanned ) {
-			return;
-		}
-
-		$this->templateFiles = $this->globRecursive( $this->trailingslashit( $this->rootDir ) . '*.twig' );
-
-		$this->logger->log( sprintf( 'Discovered %d Twig templates in "%s".', count( $this->templateFiles ), $this->rootDir ) );
-		$this->isScanned = true;
-	}
-
-
-	/**
 	 * Add a directory separator to a path if it's missing.
 	 *
 	 * @param string $path
@@ -91,24 +105,10 @@ class TemplateDirectoryReader implements TemplateProviderInterface {
 	 * @return string
 	 */
 	private function trailingslashit( $path ) {
-		if( in_array( substr( $path, - 1 ), [ DIRECTORY_SEPARATOR, '\'' ], true ) ) {
+		if ( in_array( substr( $path, - 1 ), [ DIRECTORY_SEPARATOR, '\'' ], true ) ) {
 			return $path;
 		}
 
 		return $path . DIRECTORY_SEPARATOR;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public function getNextTemplate() {
-		$this->maybeScan();
-
-		if( empty( $this->templateFiles ) ) {
-			return null;
-		}
-
-		return $this->templateFactory->createFromFile( array_shift( $this->templateFiles ) );
 	}
 }

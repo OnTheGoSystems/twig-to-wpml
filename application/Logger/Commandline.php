@@ -15,7 +15,7 @@ class Commandline extends AbstractLogger {
 	 * @param int $level
 	 */
 	public function log( $message, $level = LogLevel::INFO ) {
-		if( ! $this->shouldPrint( $level ) ) {
+		if ( ! $this->shouldPrint( $level ) ) {
 			return;
 		}
 

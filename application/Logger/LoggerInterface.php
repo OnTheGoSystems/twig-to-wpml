@@ -1,4 +1,5 @@
 <?php
+
 namespace OTGS\TwigToWPML\Logger;
 
 use OTGS\TwigToWPML\Setup\SetupInterface;
@@ -21,6 +22,7 @@ interface LoggerInterface {
 	 * Apply the relevant logging options once they have been processed.
 	 *
 	 * @param SetupInterface $setup
+	 *
 	 * @return void
 	 */
 	public function applySetup( SetupInterface $setup );

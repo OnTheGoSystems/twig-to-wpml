@@ -16,7 +16,7 @@ class OutputFactory {
 	 * @return OutputInterface
 	 */
 	public function build( $outputArg ) {
-		if( empty( $outputArg ) ) {
+		if ( empty( $outputArg ) ) {
 			return new StandardOutput( new StringOutput() );
 		}
 

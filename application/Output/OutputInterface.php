@@ -33,7 +33,7 @@ interface OutputInterface {
 	 * Append a PHP comment.
 	 *
 	 * @param string $comment Contents of the comment without the comment syntax itself. New lines acceptable
-	 * 		but not encouraged.
+	 *        but not encouraged.
 	 *
 	 * @return void
 	 */

@@ -33,11 +33,11 @@ class Bootstrap {
 
 		$args = new Setup\CommandlineArgs( $argv, new GetOpt(), $logger );
 		$args->initialize();
-		if( ! $args->isValid() ) {
+		if ( ! $args->isValid() ) {
 			return 1; // error
 		}
 
-		if( ! $args->shouldContinue() ) {
+		if ( ! $args->shouldContinue() ) {
 			return 0; // success, but we're done here
 		}
 

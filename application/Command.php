@@ -67,13 +67,13 @@ class Command {
 
 		$hadErrors = false;
 
-		while( $template = $this->templateProvider->getNextTemplate() ) {
+		while ( $template = $this->templateProvider->getNextTemplate() ) {
 			$this->logger->log( sprintf( 'Processing template "%s" ...', $template->getName() ) );
 			$this->logger->indent();
 
 			try {
 				$this->processSingleTemplate( $template );
-			} catch( \Throwable $t ) {
+			} catch ( \Throwable $t ) {
 				$this->logger->log(
 					sprintf(
 						'There has been an error while processing this template: "%s". The template has been skipped.',
@@ -91,6 +91,7 @@ class Command {
 
 		$this->output->footer();
 		$this->logger->log( 'Operation completed.' );
+
 		return ! $hadErrors;
 	}
 
@@ -118,9 +119,10 @@ class Command {
 		if ( $this->twigService->isGettextFunctionCall( $node ) ) {
 			$args = $this->twigService->getFunctionCallArgs( $node );
 			$string = $this->parseGettextArguments( $args );
-			if( null !== $string ) {
+			if ( null !== $string ) {
 				$this->logger->log( sprintf( 'Discovered string: TXD %s "%s"', $string->getTextdomain(), $string->getString() ) );
 				$this->output->appendString( $string );
+
 				return;
 			}
 
@@ -132,7 +134,7 @@ class Command {
 		}
 
 		$subnodes = $this->twigService->getTwigSubnodes( $node );
-		foreach( $subnodes as $subnode ) {
+		foreach ( $subnodes as $subnode ) {
 			$this->processTwigNode( $subnode );
 		}
 	}
@@ -142,10 +144,11 @@ class Command {
 	 * Process arguments of a gettext function and turn them into a TranslatableString instance if possible.
 	 *
 	 * @param string[] $args
+	 *
 	 * @return TranslatableString|null
 	 */
 	private function parseGettextArguments( $args ) {
-		switch( count( $args ) ) {
+		switch ( count( $args ) ) {
 			case 2:
 				return new TranslatableString( $args[0], $args[1] );
 			case 1:

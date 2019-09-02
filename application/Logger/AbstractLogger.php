@@ -59,11 +59,11 @@ abstract class AbstractLogger implements LoggerInterface {
 	 * @return bool
 	 */
 	protected function shouldPrint( $logLevel ) {
-		if( LogLevel::OVERRIDE === $logLevel ) {
+		if ( LogLevel::OVERRIDE === $logLevel ) {
 			return true;
 		}
 
-		if( $this->isQuiet ) {
+		if ( $this->isQuiet ) {
 			return false;
 		}
 

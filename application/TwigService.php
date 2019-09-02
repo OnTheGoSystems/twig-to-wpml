@@ -26,7 +26,7 @@ class TwigService {
 
 	/**
 	 * @var \Twig\Environment Latest Twig environment object.
-	 * 		Can be recreated during the process after a new function has been added.
+	 *        Can be recreated during the process after a new function has been added.
 	 */
 	private $twigEnvironment;
 
@@ -41,59 +41,6 @@ class TwigService {
 	 */
 	public function __construct( LoggerInterface $logger ) {
 		$this->logger = $logger;
-	}
-
-
-	/**
-	 * Add a new (faux) function to the Twig environment, so that it can be parsed.
-	 *
-	 * @param \Twig\Environment $twig
-	 * @param string $functionName
-	 */
-	private function addTwigFunction( \Twig\Environment $twig, $functionName ) {
-		$noop = static function () {
-			// Just a faux function to allow Twig to parse the template.
-		};
-
-		$twig->addFunction( new \Twig\TwigFunction( $functionName, $noop ) );
-	}
-
-
-	/**
-	 * Create a new twig environment.
-	 *
-	 * @return \Twig\Environment
-	 */
-	private function createEnvironment() {
-		$twig = new \Twig\Environment( new \Twig\Loader\ArrayLoader() );
-		foreach ( array_merge( self::GETTEXT_FUNCTIONS, $this->dynamicallyDiscoveredFunctions ) as $functionName ) {
-			$this->addTwigFunction( $twig, $functionName );
-		}
-
-		return $twig;
-	}
-
-
-	/**
-	 * Get the current Twig environment or create a new one.
-	 * @return \Twig\Environment
-	 */
-	private function getEnvironment() {
-		if( null === $this->twigEnvironment ) {
-			$this->twigEnvironment = $this->createEnvironment();
-		}
-
-		return $this->twigEnvironment;
-	}
-
-
-	/**
-	 * Recreate the Twig environment and return it.
-	 * @return \Twig\Environment
-	 */
-	private function recreateEnvironment() {
-		$this->twigEnvironment = $this->createEnvironment();
-		return $this->twigEnvironment;
 	}
 
 
@@ -115,13 +62,13 @@ class TwigService {
 				$tokenStream = $twig->tokenize( new \Twig\Source( $template->getContent(), $template->getName() ) );
 				$nodes = $twig->parse( $tokenStream );
 				$repeatParsing = false;
-			} catch( \Twig\Error\SyntaxError $e ) {
+			} catch ( \Twig\Error\SyntaxError $e ) {
 				// Try to recognize a syntax error because of an undefined function.
 				//
 				// If that happens, add the function to the list, recreate the environment and try again.
 				$matches = [];
 				$matchResult = preg_match( '/Unknown "([^"]+)" function./m', $e->getRawMessage(), $matches );
-				if( $matchResult === 1 ) {
+				if ( $matchResult === 1 ) {
 					$missingFunctionName = $matches[1];
 					$this->dynamicallyDiscoveredFunctions[ $missingFunctionName ] = $missingFunctionName;
 					$twig = $this->recreateEnvironment();
@@ -144,47 +91,58 @@ class TwigService {
 
 
 	/**
-	 * Extract a protected property from an object.
+	 * Get the current Twig environment or create a new one.
 	 *
-	 * @param object $object
-	 * @param string $propertyName
-	 *
-	 * @return mixed
-	 * @throws \ReflectionException
+	 * @return \Twig\Environment
 	 */
-	private function getProtectedProperty( $object, $propertyName ) {
-		$reflection = new ReflectionClass( $object );
-		$property = $reflection->getProperty( $propertyName );
-		$property->setAccessible( true );
+	private function getEnvironment() {
+		if ( null === $this->twigEnvironment ) {
+			$this->twigEnvironment = $this->createEnvironment();
+		}
 
-		return $property->getValue( $object );
-
+		return $this->twigEnvironment;
 	}
 
 
 	/**
-	 * Retrieve subnodes from a Twig node.
+	 * Create a new twig environment.
 	 *
-	 * @param \Twig\Node\Node $node
-	 *
-	 * @return mixed
-	 * @throws \ReflectionException
+	 * @return \Twig\Environment
 	 */
-	public function getTwigSubnodes( \Twig\Node\Node $node ) {
-		return $this->getProtectedProperty( $node, 'nodes' );
+	private function createEnvironment() {
+		$twig = new \Twig\Environment( new \Twig\Loader\ArrayLoader() );
+		foreach ( array_merge( self::GETTEXT_FUNCTIONS, $this->dynamicallyDiscoveredFunctions ) as $functionName ) {
+			$this->addTwigFunction( $twig, $functionName );
+		}
+
+		return $twig;
 	}
 
 
 	/**
-	 * Retrieve node attributes.
+	 * Add a new (faux) function to the Twig environment, so that it can be parsed.
 	 *
-	 * @param \Twig\Node\Node $node
-	 *
-	 * @return mixed
-	 * @throws \ReflectionException
+	 * @param \Twig\Environment $twig
+	 * @param string $functionName
 	 */
-	public function getTwigNodeAttributes( \Twig\Node\Node $node ) {
-		return $this->getProtectedProperty( $node, 'attributes' );
+	private function addTwigFunction( \Twig\Environment $twig, $functionName ) {
+		$noop = static function () {
+			// Just a faux function to allow Twig to parse the template.
+		};
+
+		$twig->addFunction( new \Twig\TwigFunction( $functionName, $noop ) );
+	}
+
+
+	/**
+	 * Recreate the Twig environment and return it.
+	 *
+	 * @return \Twig\Environment
+	 */
+	private function recreateEnvironment() {
+		$this->twigEnvironment = $this->createEnvironment();
+
+		return $this->twigEnvironment;
 	}
 
 
@@ -211,7 +169,40 @@ class TwigService {
 
 
 	/**
+	 * Retrieve node attributes.
+	 *
+	 * @param \Twig\Node\Node $node
+	 *
+	 * @return mixed
+	 * @throws \ReflectionException
+	 */
+	public function getTwigNodeAttributes( \Twig\Node\Node $node ) {
+		return $this->getProtectedProperty( $node, 'attributes' );
+	}
+
+
+	/**
+	 * Extract a protected property from an object.
+	 *
+	 * @param object $object
+	 * @param string $propertyName
+	 *
+	 * @return mixed
+	 * @throws \ReflectionException
+	 */
+	private function getProtectedProperty( $object, $propertyName ) {
+		$reflection = new ReflectionClass( $object );
+		$property = $reflection->getProperty( $propertyName );
+		$property->setAccessible( true );
+
+		return $property->getValue( $object );
+
+	}
+
+
+	/**
 	 * Extract (constant) call arguments from a Twig node.
+	 *
 	 * @param \Twig\Node\Node $node
 	 *
 	 * @return array
@@ -231,9 +222,12 @@ class TwigService {
 			function ( \Twig\Node\Expression\ConstantExpression $argumentNode ) {
 				$attributes = $this->getTwigNodeAttributes( $argumentNode );
 
-				if( ! is_array( $attributes ) || ! array_key_exists( 'value', $attributes ) || ! is_string( $attributes['value'] ) ) {
+				if ( ! is_array( $attributes )
+					|| ! array_key_exists( 'value', $attributes )
+					|| ! is_string( $attributes['value'] ) ) {
 					throw new \RuntimeException( 'Missing the "value" attribute from a ConstantExpression Twig node.' );
 				}
+
 				return $attributes['value'];
 			},
 			array_filter( $this->getTwigSubnodes( $callSubnodes['arguments'] ), static function ( \Twig\Node\Node $node ) {
@@ -241,5 +235,18 @@ class TwigService {
 			} )
 		);
 
+	}
+
+
+	/**
+	 * Retrieve subnodes from a Twig node.
+	 *
+	 * @param \Twig\Node\Node $node
+	 *
+	 * @return mixed
+	 * @throws \ReflectionException
+	 */
+	public function getTwigSubnodes( \Twig\Node\Node $node ) {
+		return $this->getProtectedProperty( $node, 'nodes' );
 	}
 }

@@ -32,17 +32,32 @@ class CommandlineArgs implements SetupInterface {
 	private function initializeGetOpt() {
 		$this->getopt->addOptions( [
 			[ 'i', 'input', \GetOpt\GetOpt::REQUIRED_ARGUMENT, 'Directory with twig templates' ],
-			[ 'o', 'output', \GetOpt\GetOpt::REQUIRED_ARGUMENT, 'Path of the output file. If none provided, the result is printed to the standard output' ],
-			[ 't', 'default-textdomain', \GetOpt\GetOpt::REQUIRED_ARGUMENT, 'Default textdomain to be used when one is missing.'],
+			[
+				'o',
+				'output',
+				\GetOpt\GetOpt::REQUIRED_ARGUMENT,
+				'Path of the output file. If none provided, the result is printed to the standard output',
+			],
+			[
+				't',
+				'default-textdomain',
+				\GetOpt\GetOpt::REQUIRED_ARGUMENT,
+				'Default textdomain to be used when one is missing.',
+			],
 			[ 'q', 'quiet', \GetOpt\GetOpt::NO_ARGUMENT ],
-			[ 'l', 'log-level', \GetOpt\GetOpt::REQUIRED_ARGUMENT, 'Desired log level: 0 is info, 1 will print warnings and 2 is for printing errors only. Ignored if --quiet is provided.' ],
-			[ 'help', \GetOpt\GetOpt::NO_ARGUMENT ]
+			[
+				'l',
+				'log-level',
+				\GetOpt\GetOpt::REQUIRED_ARGUMENT,
+				'Desired log level: 0 is info, 1 will print warnings and 2 is for printing errors only. Ignored if --quiet is provided.',
+			],
+			[ 'help', \GetOpt\GetOpt::NO_ARGUMENT ],
 		] );
 	}
 
 
 	private function maybeInit() {
-		if( $this->isInitialized ) {
+		if ( $this->isInitialized ) {
 			return;
 		}
 
@@ -64,8 +79,9 @@ class CommandlineArgs implements SetupInterface {
 
 	public function isValid() {
 		$this->maybeInit();
-		if( null === $this->getInputDirectory() ) {
+		if ( null === $this->getInputDirectory() ) {
 			$this->logger->log( 'Missing --input argument.', LogLevel::ERROR );
+
 			return false;
 		}
 
@@ -84,8 +100,9 @@ class CommandlineArgs implements SetupInterface {
 
 
 	public function shouldContinue() {
-		if( $this->getopt->offsetExists( 'help' ) ) {
+		if ( $this->getopt->offsetExists( 'help' ) ) {
 			$this->logger->log( $this->getopt->getHelpText(), LogLevel::OVERRIDE );
+
 			return false;
 		}
 

@@ -11,7 +11,7 @@ use OTGS\TwigToWPML\TranslatableString;
  */
 class FileOutput implements OutputInterface {
 
-	/** @var string*/
+	/** @var string */
 	private $filename;
 
 	/** @var resource */
@@ -34,21 +34,21 @@ class FileOutput implements OutputInterface {
 
 
 	/**
+	 * @inheritDoc
+	 */
+	public function header() {
+		$this->fileHandle = fopen( $this->filename, 'wb' );
+		$this->write( $this->stringOutput->header() );
+	}
+
+
+	/**
 	 * Write a string to the open file.
 	 *
 	 * @param string $string
 	 */
 	private function write( $string ) {
 		fwrite( $this->fileHandle, $string );
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	public function header() {
-		$this->fileHandle = fopen( $this->filename, 'wb' );
-		$this->write( $this->stringOutput->header() );
 	}
 
 
