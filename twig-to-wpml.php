@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Twig to WPML
-Plugin URI: @todo
+Plugin URI: https://github.com/OnTheGoSystems/twig-to-wpml
 Description: WP-CLI extension to parse Twig tempates for strings and register them with WPML String Translation.
 Version: 0.1.0
 Author: zaantar

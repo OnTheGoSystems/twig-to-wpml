@@ -16,8 +16,14 @@
       "php": "7.1"
     }
   },
+  "autoload": {
+    "classmap": [
+      "application/"
+    ]
+  },
   "require": {
-    "twig/twig": "^2.11"
+    "twig/twig": "^2.11",
+    "ulrichsg/getopt-php": "dev-master"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master"
